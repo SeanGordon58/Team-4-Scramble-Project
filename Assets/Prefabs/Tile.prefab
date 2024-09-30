@@ -358,6 +358,7 @@ MonoBehaviour:
   Text: {fileID: 7731870923029791383}
   SquareRenderer: {fileID: 3788210153129585505}
   AccentSquareRenderer: {fileID: 3159006005956283290}
+  spriteRenderer: {fileID: 3788210153129585505}
 --- !u!61 &6857792529108187102
 BoxCollider2D:
   m_ObjectHideFlags: 0

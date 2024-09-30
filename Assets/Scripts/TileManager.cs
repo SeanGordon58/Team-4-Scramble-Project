@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class TileManager : MonoBehaviour
@@ -18,6 +19,8 @@ public class TileManager : MonoBehaviour
     public BoardManager boardManager; // Reference to BoardManager
 
     private HashSet<string> validWords;
+
+    public GameObject scoreContainer;
 
     public void InitializeGame()
     {
@@ -173,6 +176,14 @@ public class TileManager : MonoBehaviour
         if (wordsFormed.Count == 0)
         {
             Debug.Log("No valid words formed.");
+
+            // Revert tile colors
+            foreach (Vector2Int position in tilesPlacedThisTurn)
+            {
+                Tile tile = boardTilesData[position.x, position.y];
+                tile.RevertColor();  // Revert the color to the original
+            }
+
             boardManager.ResetTilesPlacedThisTurn();
         }
         else
@@ -192,15 +203,31 @@ public class TileManager : MonoBehaviour
                 else
                 {
                     Debug.Log($"Word '{word}' is invalid.");
+
+                    // Revert tile colors if the word is invalid
+                    foreach (Vector2Int position in tilesPlacedThisTurn)
+                    {
+                        Tile tile = boardTilesData[position.x, position.y];
+                        tile.RevertColor();  // Revert the color to the original
+                    }
+
                     boardManager.ResetTilesPlacedThisTurn();
                     return;
                 }
             }
 
-            // Add total score to current player
             Player currentPlayer = GetCurrentPlayer();
-            currentPlayer.AddScore(totalScore);
-            Debug.Log($"Player {currentPlayerIndex + 1} earned {totalScore} points this turn. Total score: {currentPlayer.Score}");
+
+            // Update the player's score
+            var scoreDisplay = scoreContainer.transform.Find($"Player{currentPlayerIndex + 1}ScoreText");
+            if (scoreDisplay != null)
+            {
+                scoreDisplay.GetComponent<TextMeshProUGUI>().text = $"Player {currentPlayerIndex + 1}: {currentPlayer.Score}";
+            }
+            else
+            {
+                Debug.LogError($"Could not find score display for Player{currentPlayerIndex + 1}ScoreText");
+            }
 
             // Refill player's hand
             RefillPlayerTiles(currentPlayer);

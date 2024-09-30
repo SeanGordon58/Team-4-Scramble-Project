@@ -14,6 +14,26 @@ public class Tile : MonoBehaviour
     public SpriteRenderer SquareRenderer;
     public SpriteRenderer AccentSquareRenderer;
 
+    private Color originalColor;
+
+    void Awake()
+    {
+        // Cache the original color of the tile
+        originalColor = SquareRenderer.color;
+    }
+
+    // Update the color of the tile
+    public void ChangeColor(Color newColor)
+    {
+        SquareRenderer.color = newColor;
+    }
+
+    // Revert to the original color
+    public void RevertColor()
+    {
+        SquareRenderer.color = originalColor;
+    }
+
     public void UpdateVisuals()
     {
         if (IsOccupied)

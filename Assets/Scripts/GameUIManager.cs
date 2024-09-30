@@ -7,7 +7,6 @@ public class GameUIManager : MonoBehaviour
     // References to UI elements
     public GameObject tileButtonPrefab; // Prefab for the tile button UI
     public Transform tilePanel;
-    public Transform scorePanel;
     public Button endTurnButton;        // Reference to the End Turn button
 
     public TileManager tileManager;   // Reference to the Board Manager

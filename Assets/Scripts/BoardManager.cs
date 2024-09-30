@@ -199,6 +199,9 @@ public class BoardManager : MonoBehaviour
             boardTileComponent.IsOccupied = true;
             boardTileComponent.PlacedThisTurn = true;
 
+            // Change the tile color to indicate it was placed
+            boardTileComponent.ChangeColor(Color.green); // Use any color you prefer
+
             // Update the visual representation
             boardTileComponent.UpdateVisuals();
 
@@ -228,19 +231,22 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+
     bool IsValidMove(Vector2Int position)
     {
         Tile boardTileData = boardTilesData[position.x, position.y];
 
+        // Check if the tile is already occupied
         if (boardTileData.IsOccupied)
         {
             Debug.Log("Tile is already occupied.");
             return false;
         }
 
-        // For the first tile placed
+        // Special case for the first tile placement
         if (tileManager.TotalTilesPlaced == 0)
         {
+            // The first tile must be placed in the center (adjust coordinates as necessary)
             if (position == new Vector2Int(7, 7)) // Center tile
             {
                 return true;
@@ -252,7 +258,7 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        // Check adjacent tiles
+        // Check if the tile is adjacent to an existing tile
         Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
 
         foreach (var dir in directions)
@@ -262,7 +268,7 @@ public class BoardManager : MonoBehaviour
             {
                 if (boardTilesData[adjacentPos.x, adjacentPos.y].IsOccupied)
                 {
-                    return true;
+                    return true; // It's adjacent to an occupied tile, so the move is valid
                 }
             }
         }
@@ -270,6 +276,7 @@ public class BoardManager : MonoBehaviour
         Debug.Log("Move must be adjacent to an existing tile.");
         return false;
     }
+
 
     public void ResetTilesPlacedThisTurn()
     {
@@ -293,23 +300,28 @@ public class BoardManager : MonoBehaviour
                 tileComponent.IsOccupied = false;
                 tileComponent.PlacedThisTurn = false;
 
-                // Add the tile to the player's hand
+                // Add the tile back to the player's hand
                 currentPlayer.AddTile(tileComponent);
 
-                // Reset the board tile
+                // Fully reset the board tile's state
                 boardTileComponent.Letter = '\0';
                 boardTileComponent.PointValue = 0;
                 boardTileComponent.IsOccupied = false;
                 boardTileComponent.PlacedThisTurn = false;
+                boardTileComponent.RevertColor();  // Revert the color to the original
 
-                // Update the visual representation
+                // Update the visual representation of the board tile
                 boardTileComponent.UpdateVisuals();
             }
         }
 
+        // Clear the list of tiles placed this turn
         tilesPlacedThisTurn.Clear();
+
+        // Update the UI for the current player's hand
         gameUIManager.DisplayPlayerTiles(currentPlayer);
     }
+
 
     // Expose necessary data and methods to TileManager
     public List<Vector2Int> GetTilesPlacedThisTurn()
