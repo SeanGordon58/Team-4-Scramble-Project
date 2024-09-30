@@ -169,8 +169,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileButtonPrefab: {fileID: 4478815179126743875, guid: 43324163c496d5d41b2cef5b143faf9e, type: 3}
   tilePanel: {fileID: 1640880944}
+  scorePanel: {fileID: 0}
   endTurnButton: {fileID: 463153016}
-  boardManager: {fileID: 525442312}
+  tileManager: {fileID: 381435014}
 --- !u!114 &381435014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,6 +187,8 @@ MonoBehaviour:
   numberOfPlayers: 2
   initialTilesPerPlayer: 7
   currentPlayerIndex: 0
+  tilePrefab: {fileID: 5097221240585076658, guid: b3ef70a7f22b2864fb4eb0cbac9fc606, type: 3}
+  boardManager: {fileID: 525442312}
 --- !u!1 &463153014
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +225,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 385.5, y: -311}
+  m_AnchoredPosition: {x: 344, y: -286}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &463153016
@@ -473,6 +476,10 @@ PrefabInstance:
       value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 4406575127562587142, guid: 40e0598fe619020449579b74a58698bc, type: 3}
+      propertyPath: tilePrefab
+      value: 
+      objectReference: {fileID: 5097221240585076658, guid: b3ef70a7f22b2864fb4eb0cbac9fc606, type: 3}
+    - target: {fileID: 4406575127562587142, guid: 40e0598fe619020449579b74a58698bc, type: 3}
       propertyPath: tileManager
       value: 
       objectReference: {fileID: 381435014}
@@ -486,11 +493,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6327117143701177337, guid: 40e0598fe619020449579b74a58698bc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6327117143701177337, guid: 40e0598fe619020449579b74a58698bc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6327117143701177337, guid: 40e0598fe619020449579b74a58698bc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -619,7 +626,7 @@ Transform:
   m_GameObject: {fileID: 1299113519}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11, y: 11, z: -10}
+  m_LocalPosition: {x: 7, y: 7, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -831,8 +838,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000030517578}
-  m_SizeDelta: {x: 0, y: 0.00012207}
+  m_AnchoredPosition: {x: -323.759, y: 215.31927}
+  m_SizeDelta: {x: -647.518, y: -430.6383}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1640880945
 MonoBehaviour:
