@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class GameUIManager : MonoBehaviour
     public GameObject tileButtonPrefab; // Prefab for the tile button UI
     public Transform tilePanel;
     public Button endTurnButton;        // Reference to the End Turn button
+    public Button endGameButton;        // Reference to the End Game button
+    public TextMeshProUGUI PlayerIndicator;
 
     public TileManager tileManager;   // Reference to the Board Manager
 
@@ -17,16 +20,23 @@ public class GameUIManager : MonoBehaviour
     {
         // Add listener for the End Turn button
         endTurnButton.onClick.AddListener(OnEndTurnButtonClicked);
+        endGameButton.onClick.AddListener(OnEndGameButtonClicked);
     }
 
     // Method called when the End Turn button is clicked
+
+    void OnEndGameButtonClicked()
+    {
+        Application.Quit();
+    }
+
     void OnEndTurnButtonClicked()
     {
         tileManager.FinalizeTurn();
     }
 
     // Populate the player's tiles in the UI
-    public void DisplayPlayerTiles(Player player)
+    public void DisplayUIForPlayer(Player player)
     {
         // Clear the existing buttons
         foreach (Transform child in tilePanel)
@@ -59,6 +69,8 @@ public class GameUIManager : MonoBehaviour
             // Add click event to select the tile
             button.onClick.AddListener(() => SelectTile(tileRef));
         }
+
+        PlayerIndicator.text = $"Current Player: {player.Name}";
     }
 
     // Called when the player selects a tile

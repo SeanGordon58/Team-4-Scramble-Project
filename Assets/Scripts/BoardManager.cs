@@ -11,7 +11,7 @@ public class BoardManager : MonoBehaviour
     private GameObject[,] boardTiles; // The visual tiles on the board
     private Tile[,] boardTilesData;   // The data for each tile on the board
 
-    private List<Vector2Int> tilesPlacedThisTurn = new List<Vector2Int>();
+    public List<Vector2Int> tilesPlacedThisTurn = new List<Vector2Int>();
 
     private void Start()
     {
@@ -148,7 +148,8 @@ public class BoardManager : MonoBehaviour
     public void UpdateUIForCurrentPlayer()
     {
         Player currentPlayer = tileManager.GetCurrentPlayer();
-        gameUIManager.DisplayPlayerTiles(currentPlayer);
+
+        gameUIManager.DisplayUIForPlayer(currentPlayer);
     }
 
     void Update()
@@ -218,10 +219,7 @@ public class BoardManager : MonoBehaviour
             gameUIManager.ClearSelectedTile();
 
             // Update UI for the current player
-            gameUIManager.DisplayPlayerTiles(currentPlayer);
-
-            // Increment TotalTilesPlaced after placing a tile
-            tileManager.IncrementTotalTilesPlaced();
+            gameUIManager.DisplayUIForPlayer(currentPlayer);
 
             Debug.Log($"Placed tile '{boardTileComponent.Letter}' at position {gridPosition.x}, {gridPosition.y}");
         }
@@ -244,7 +242,7 @@ public class BoardManager : MonoBehaviour
         }
 
         // Special case for the first tile placement
-        if (tileManager.TotalTilesPlaced == 0)
+        if (tilesPlacedThisTurn.Count + tileManager.TotalTilesPlaced == 0)
         {
             // The first tile must be placed in the center (adjust coordinates as necessary)
             if (position == new Vector2Int(7, 7)) // Center tile
@@ -319,7 +317,7 @@ public class BoardManager : MonoBehaviour
         tilesPlacedThisTurn.Clear();
 
         // Update the UI for the current player's hand
-        gameUIManager.DisplayPlayerTiles(currentPlayer);
+        gameUIManager.DisplayUIForPlayer(currentPlayer);
     }
 
 

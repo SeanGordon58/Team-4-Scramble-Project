@@ -4,7 +4,8 @@ using System.Collections.Generic;
 public class Player
 {
     public List<Tile> PlayerTiles { get; private set; }
-    public int Score { get; private set; }
+    public int Score;
+    public string Name;
 
     public Player()
     {

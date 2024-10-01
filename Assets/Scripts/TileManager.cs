@@ -98,7 +98,11 @@ public class TileManager : MonoBehaviour
     {
         players = new List<Player>();
         for (int i = 0; i < numberOfPlayers; i++)
-            players.Add(new Player());
+        {
+            Player newPlayer = new Player();
+            newPlayer.Name = $"Player {i + 1}"; // Assign unique name based on index
+            players.Add(newPlayer);
+        }
     }
 
     private void DistributeInitialTiles()
@@ -132,11 +136,6 @@ public class TileManager : MonoBehaviour
         drawnTile.gameObject.SetActive(true);
 
         return drawnTile;
-    }
-
-    public void IncrementTotalTilesPlaced()
-    {
-        TotalTilesPlaced++;
     }
 
     public void EndTurn()
@@ -190,6 +189,10 @@ public class TileManager : MonoBehaviour
         {
             int totalScore = 0;
 
+            TotalTilesPlaced += tilesPlacedThisTurn.Count;
+
+            Player currentPlayer = GetCurrentPlayer();
+
             foreach (WordInfo wordInfo in wordsFormed)
             {
                 string word = wordInfo.Word.ToUpper();
@@ -197,7 +200,7 @@ public class TileManager : MonoBehaviour
                 if (validWords.Contains(word))
                 {
                     int wordScore = CalculateWordScore(wordInfo);
-                    totalScore += wordScore;
+                    currentPlayer.Score += wordScore;
                     Debug.Log($"Word '{word}' is valid and scored {wordScore} points.");
                 }
                 else
@@ -216,17 +219,17 @@ public class TileManager : MonoBehaviour
                 }
             }
 
-            Player currentPlayer = GetCurrentPlayer();
+            
 
             // Update the player's score
             var scoreDisplay = scoreContainer.transform.Find($"Player{currentPlayerIndex + 1}ScoreText");
             if (scoreDisplay != null)
             {
-                scoreDisplay.GetComponent<TextMeshProUGUI>().text = $"Player {currentPlayerIndex + 1}: {currentPlayer.Score}";
+                scoreDisplay.GetComponent<TextMeshProUGUI>().text = $"Player {currentPlayer.Name}: {currentPlayer.Score}";
             }
             else
             {
-                Debug.LogError($"Could not find score display for Player{currentPlayerIndex + 1}ScoreText");
+                Debug.LogError($"Could not find score display for Player{currentPlayer.Name + 1}ScoreText");
             }
 
             // Refill player's hand
