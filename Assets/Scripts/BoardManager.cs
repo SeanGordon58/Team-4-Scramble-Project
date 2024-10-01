@@ -16,7 +16,6 @@ public class BoardManager : MonoBehaviour
     private void Start()
     {
         InitializeBoardLayout();
-        tileManager.InitializeGame();
         UpdateUIForCurrentPlayer();
     }
 

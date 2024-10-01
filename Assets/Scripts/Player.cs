@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 
-
 public class Player
 {
     public List<Tile> PlayerTiles { get; private set; }
@@ -10,6 +9,14 @@ public class Player
     public Player()
     {
         PlayerTiles = new List<Tile>();
+        Score = 0;
+        Name = "Player";
+    }
+
+    // Optional constructor to set the name directly
+    public Player(string name) : this()
+    {
+        Name = name;
     }
 
     public void AddTile(Tile tile)

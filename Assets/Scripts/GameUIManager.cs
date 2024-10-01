@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -10,20 +11,37 @@ public class GameUIManager : MonoBehaviour
     public Transform tilePanel;
     public Button endTurnButton;        // Reference to the End Turn button
     public Button endGameButton;        // Reference to the End Game button
+    public Button restartButton;        // Reference to the End Game button
+
     public TextMeshProUGUI PlayerIndicator;
 
     public TileManager tileManager;   // Reference to the Board Manager
 
     private Tile selectedTile;    // The currently selected tile for placement
 
+    public void InitializeUI()
+    {
+        endTurnButton.gameObject.SetActive(true);
+        endGameButton.gameObject.SetActive(true);
+        restartButton.gameObject.SetActive(true);
+        tilePanel.gameObject.SetActive(true);
+        PlayerIndicator.gameObject.SetActive(true);
+    }
+
     void Start()
     {
         // Add listener for the End Turn button
         endTurnButton.onClick.AddListener(OnEndTurnButtonClicked);
         endGameButton.onClick.AddListener(OnEndGameButtonClicked);
+        restartButton.onClick.AddListener(OnRestartButtonClicked);
     }
 
     // Method called when the End Turn button is clicked
+
+    void OnRestartButtonClicked()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // loads current scene
+    }
 
     void OnEndGameButtonClicked()
     {

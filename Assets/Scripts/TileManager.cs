@@ -22,10 +22,14 @@ public class TileManager : MonoBehaviour
 
     public GameObject scoreContainer;
 
-    public void InitializeGame()
+    // Modified InitializeGame method to accept player names
+    public void InitializeGame(int numberOfPlayers, List<string> playerNames)
     {
+        boardManager.enabled = true;
+        scoreContainer.gameObject.SetActive(true);
+        this.numberOfPlayers = numberOfPlayers;
         InitializeTileBag();
-        CreatePlayers();
+        CreatePlayers(playerNames);
         DistributeInitialTiles();
         LoadDictionary();
     }
@@ -94,13 +98,14 @@ public class TileManager : MonoBehaviour
         }
     }
 
-    private void CreatePlayers()
+    // Modified CreatePlayers method to accept player names
+    private void CreatePlayers(List<string> playerNames)
     {
         players = new List<Player>();
         for (int i = 0; i < numberOfPlayers; i++)
         {
             Player newPlayer = new Player();
-            newPlayer.Name = $"Player {i + 1}"; // Assign unique name based on index
+            newPlayer.Name = playerNames[i]; // Assign name from the list
             players.Add(newPlayer);
         }
     }
@@ -187,8 +192,6 @@ public class TileManager : MonoBehaviour
         }
         else
         {
-            int totalScore = 0;
-
             TotalTilesPlaced += tilesPlacedThisTurn.Count;
 
             Player currentPlayer = GetCurrentPlayer();
@@ -219,17 +222,15 @@ public class TileManager : MonoBehaviour
                 }
             }
 
-            
-
             // Update the player's score
             var scoreDisplay = scoreContainer.transform.Find($"Player{currentPlayerIndex + 1}ScoreText");
             if (scoreDisplay != null)
             {
-                scoreDisplay.GetComponent<TextMeshProUGUI>().text = $"Player {currentPlayer.Name}: {currentPlayer.Score}";
+                scoreDisplay.GetComponent<TextMeshProUGUI>().text = $"{currentPlayer.Name}: {currentPlayer.Score}";
             }
             else
             {
-                Debug.LogError($"Could not find score display for Player{currentPlayer.Name + 1}ScoreText");
+                Debug.LogError($"Could not find score display for {currentPlayer.Name}");
             }
 
             // Refill player's hand
@@ -263,7 +264,7 @@ public class TileManager : MonoBehaviour
             }
 
             // Check vertically (top to bottom)
-            WordInfo verticalWord = GetWord(position, Vector2Int.down, boardTilesData); // Changed from Vector2Int.up to Vector2Int.down
+            WordInfo verticalWord = GetWord(position, Vector2Int.down, boardTilesData);
             if (verticalWord != null && !processedWords.Contains(verticalWord.Word))
             {
                 wordsFormed.Add(verticalWord);
@@ -281,7 +282,6 @@ public class TileManager : MonoBehaviour
 
         int boardSize = boardTilesData.GetLength(0);
 
-        // Move left or up (based on
         // Move left or up (based on the direction) to find the start of the word
         Vector2Int pos = startPos;
         while (true)
