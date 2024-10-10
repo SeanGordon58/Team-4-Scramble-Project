@@ -53,6 +53,8 @@ public class PlayerSetupManager : MonoBehaviour
 
     void OnStartGameClicked()
     {
+        if (playerNameInputs.Count < 2 | playerNameInputs.Count > 4) { return; }
+
         List<string> playerNames = new List<string>();
         foreach (var input in playerNameInputs)
         {
