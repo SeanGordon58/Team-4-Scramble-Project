@@ -3,18 +3,27 @@ using TMPro;
 
 public class Tile : MonoBehaviour
 {
-    public string TileType;     // Special tile types like DWS, TWS, etc.
-    public char Letter;         // The letter placed on this tile, if any
-    public int PointValue;      // The point value of the letter
-    public bool IsOccupied;     // Whether the tile is occupied by a letter
-    public bool PlacedThisTurn; // Whether the tile was placed this turn
+    // The type of the tile (e.g., DWS, TWS, etc.)
+    public string TileType;
 
-    // UI Components
-    public TextMeshProUGUI Text;
-    public SpriteRenderer SquareRenderer;
-    public SpriteRenderer AccentSquareRenderer;
+    // The letter assigned to this tile
+    public char Letter;
 
-    private Color originalColor;
+    // The point value of the letter
+    public int PointValue;
+
+    // Whether the tile is occupied by a letter
+    public bool IsOccupied;
+
+    // Whether the tile was placed this turn
+    public bool PlacedThisTurn;
+
+    // UI components
+    public TextMeshProUGUI Text; // Reference to the text component displaying the letter or tile type
+    public SpriteRenderer SquareRenderer; // The main square renderer
+    public SpriteRenderer AccentSquareRenderer; // The accent renderer for special tiles
+
+    private Color originalColor; // The original color of the tile
 
     void Awake()
     {
@@ -22,18 +31,19 @@ public class Tile : MonoBehaviour
         originalColor = SquareRenderer.color;
     }
 
-    // Update the color of the tile
+    // Updates the color of the tile
     public void ChangeColor(Color newColor)
     {
         SquareRenderer.color = newColor;
     }
 
-    // Revert to the original color
+    // Reverts the tile color to the original
     public void RevertColor()
     {
         SquareRenderer.color = originalColor;
     }
 
+    // Updates the visual representation of the tile based on its state
     public void UpdateVisuals()
     {
         if (IsOccupied)
@@ -47,9 +57,9 @@ public class Tile : MonoBehaviour
         {
             // Display the special tile type
             Text.text = TileType;
-            Text.color = GetTileColor(TileType);
+            Text.color = GetTileColor(TileType); // Set text color based on tile type
             AccentSquareRenderer.enabled = true;
-            AccentSquareRenderer.color = GetTileColor(TileType);
+            AccentSquareRenderer.color = GetTileColor(TileType); // Set accent color
         }
         else
         {
@@ -59,6 +69,7 @@ public class Tile : MonoBehaviour
         }
     }
 
+    // Returns the color associated with a special tile type
     Color GetTileColor(string tileType)
     {
         switch (tileType)

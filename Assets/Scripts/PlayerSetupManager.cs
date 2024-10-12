@@ -5,13 +5,20 @@ using System.Collections.Generic;
 
 public class PlayerSetupManager : MonoBehaviour
 {
+    // Input field for the number of players
     public TMP_InputField numberOfPlayersInput;
+
+    // Prefab for player name input fields
     public GameObject playerNameInputPrefab;
+
+    // Container to hold player name input fields
     public Transform playerNamesContainer;
+
+    // Button to start the game
     public Button startGameButton;
 
-    private int numberOfPlayers;
-    private List<TMP_InputField> playerNameInputs = new List<TMP_InputField>();
+    private int numberOfPlayers; // The number of players
+    private List<TMP_InputField> playerNameInputs = new List<TMP_InputField>(); // List of player name inputs
 
     public TileManager tileManager; // Reference to TileManager
     public GameUIManager gameUIManager; // Reference to GameUIManager
@@ -25,6 +32,7 @@ public class PlayerSetupManager : MonoBehaviour
         startGameButton.onClick.AddListener(OnStartGameClicked);
     }
 
+    // Called when the number of players input changes
     void OnNumberOfPlayersChanged(string value)
     {
         // Clear existing inputs
@@ -51,9 +59,14 @@ public class PlayerSetupManager : MonoBehaviour
         }
     }
 
+    // Called when the Start Game button is clicked
     void OnStartGameClicked()
     {
-        if (playerNameInputs.Count < 2 | playerNameInputs.Count > 4) { return; }
+        // Ensure valid number of players
+        if (playerNameInputs.Count < 2 || playerNameInputs.Count > 4)
+        {
+            return;
+        }
 
         List<string> playerNames = new List<string>();
         foreach (var input in playerNameInputs)
@@ -69,7 +82,6 @@ public class PlayerSetupManager : MonoBehaviour
         // Pass the player info to TileManager
         tileManager.InitializeGame(numberOfPlayers, playerNames);
         gameUIManager.InitializeUI();
-
 
         // Hide the player setup panel
         playerNamesContainer.gameObject.SetActive(false);

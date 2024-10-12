@@ -4,38 +4,58 @@ using UnityEngine;
 
 public class TileManager : MonoBehaviour
 {
+    // The number of players in the game
     public int numberOfPlayers = 2;
+
+    // The initial number of tiles each player receives
     public int initialTilesPerPlayer = 7;
 
+    // A dictionary representing the tile bag with letter scores
     private Dictionary<char, int> tileBag;
+
+    // A list of all available tiles in the game
     private List<Tile> availableTiles;
+
+    // A list of all players in the game
     public List<Player> players;
 
+    // The index of the current player
     public int currentPlayerIndex = 0;
+
+    // Total number of tiles placed on the board
     public int TotalTilesPlaced { get; private set; } = 0;
+
+    // Total number of turns made in the game
     public int TotalTurnsMade { get; private set; } = 0;
 
+    // The prefab used to create tile GameObjects
     public GameObject tilePrefab;
+
+    // Reference to the BoardManager script
     public BoardManager boardManager; // Reference to BoardManager
 
+    // A set containing all valid words from the dictionary
     private HashSet<string> validWords;
 
+    // The UI container for displaying player scores
     public GameObject scoreContainer;
 
-    // Modified InitializeGame method to accept player names
+    // Initializes the game with the specified number of players and their names
     public void InitializeGame(int numberOfPlayers, List<string> playerNames)
     {
-        boardManager.enabled = true;
-        scoreContainer.gameObject.SetActive(true);
-        this.numberOfPlayers = numberOfPlayers;
-        InitializeTileBag();
-        CreatePlayers(playerNames);
-        DistributeInitialTiles();
-        LoadDictionary();
+        boardManager.enabled = true; // Enable the board manager
+        scoreContainer.gameObject.SetActive(true); // Show the score container
+        this.numberOfPlayers = numberOfPlayers; // Set the number of players
+        InitializeTileBag(); // Initialize the tile bag with letters and counts
+        CreatePlayers(playerNames); // Create player objects
+        DistributeInitialTiles(); // Give initial tiles to each player
+        LoadDictionary(); // Load the valid words dictionary
     }
 
+    // Initializes the tile bag with letter tiles and their counts
     private void InitializeTileBag()
     {
+        // Initialize tile bag with letter scores
         tileBag = new Dictionary<char, int>
         {
             {'A', 1}, {'B', 3}, {'C', 3}, {'D', 2}, {'E', 1},
@@ -46,9 +66,10 @@ public class TileManager : MonoBehaviour
             {'Z', 10}
         };
 
+        // Initialize the list of available tiles
         availableTiles = new List<Tile>();
 
-        // Add tiles to the bag
+        // Add tiles to the bag with specific counts
         AddTilesToBag('A', 9);
         AddTilesToBag('B', 2);
         AddTilesToBag('C', 2);
@@ -77,6 +98,7 @@ public class TileManager : MonoBehaviour
         AddTilesToBag('Z', 1);
     }
 
+    // Adds a specific number of tiles of a given letter to the bag
     private void AddTilesToBag(char letter, int count)
     {
         for (int i = 0; i < count; i++)
@@ -87,44 +109,46 @@ public class TileManager : MonoBehaviour
 
             // Get the Tile component and set properties
             Tile tileComponent = tileObject.GetComponent<Tile>();
-            tileComponent.TileType = "";
-            tileComponent.Letter = letter;
-            tileComponent.PointValue = tileBag[letter];
-            tileComponent.IsOccupied = false;
-            tileComponent.PlacedThisTurn = false;
+            tileComponent.TileType = ""; // Set tile type to empty
+            tileComponent.Letter = letter; // Assign the letter
+            tileComponent.PointValue = tileBag[letter]; // Assign the point value from tileBag
+            tileComponent.IsOccupied = false; // Mark as not occupied
+            tileComponent.PlacedThisTurn = false; // Not placed yet
 
             // Add the tile component to the available tiles list
             availableTiles.Add(tileComponent);
         }
     }
 
-    // Modified CreatePlayers method to accept player names
+    // Creates player objects and assigns names to them
     private void CreatePlayers(List<string> playerNames)
     {
-        players = new List<Player>();
+        players = new List<Player>(); // Initialize the list of players
         for (int i = 0; i < numberOfPlayers; i++)
         {
-            Player newPlayer = new Player();
+            Player newPlayer = new Player(); // Create a new player
             newPlayer.Name = playerNames[i]; // Assign name from the list
-            players.Add(newPlayer);
+            players.Add(newPlayer); // Add the player to the list
         }
     }
 
+    // Distributes initial tiles to each player
     private void DistributeInitialTiles()
     {
         foreach (var player in players)
         {
             for (int j = 0; j < initialTilesPerPlayer; j++)
             {
-                Tile tile = DrawRandomTile();
+                Tile tile = DrawRandomTile(); // Draw a random tile
                 if (tile != null)
                 {
-                    player.AddTile(tile);
+                    player.AddTile(tile); // Add the tile to the player's hand
                 }
             }
         }
     }
 
+    // Draws a random tile from the available tiles
     public Tile DrawRandomTile()
     {
         if (availableTiles.Count == 0)
@@ -133,48 +157,57 @@ public class TileManager : MonoBehaviour
             return null;
         }
 
-        int randomIndex = Random.Range(0, availableTiles.Count);
-        Tile drawnTile = availableTiles[randomIndex];
-        availableTiles.RemoveAt(randomIndex);
+        int randomIndex = Random.Range(0, availableTiles.Count); // Get a random index
+        Tile drawnTile = availableTiles[randomIndex]; // Get the tile at that index
+        availableTiles.RemoveAt(randomIndex); // Remove the tile from the bag
 
         // Activate the tile GameObject if necessary
         drawnTile.gameObject.SetActive(true);
 
-        return drawnTile;
+        return drawnTile; // Return the drawn tile
     }
 
+    // Ends the current player's turn and moves to the next player
     public void EndTurn()
     {
-        TotalTurnsMade++;
-        currentPlayerIndex = (currentPlayerIndex + 1) % numberOfPlayers;
+        TotalTurnsMade++; // Increment the total turns made
+        currentPlayerIndex = (currentPlayerIndex + 1) % numberOfPlayers; // Move to the next player
     }
 
+    // Gets the current player object
     public Player GetCurrentPlayer()
     {
         return players[currentPlayerIndex];
     }
 
+    // Loads the valid words dictionary from a text file
     public void LoadDictionary()
     {
-        TextAsset dictionaryText = Resources.Load<TextAsset>("dictionary");
+        TextAsset dictionaryText = Resources.Load<TextAsset>("dictionary"); // Load the dictionary text file
         if (dictionaryText != null)
         {
+            // Split the text into words, removing empty entries
             string[] words = dictionaryText.text.Split(new[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+            // Create a hash set of words for quick lookup
             validWords = new HashSet<string>(words, System.StringComparer.OrdinalIgnoreCase);
             Debug.Log($"Loaded {validWords.Count} words into the dictionary.");
         }
         else
         {
             Debug.LogError("Failed to load dictionary file. Ensure 'dictionary.txt' is placed in the 'Resources' folder.");
-            validWords = new HashSet<string>();
+            validWords = new HashSet<string>(); // Initialize as empty set
         }
     }
 
+    // Finalizes the current player's turn, checking for valid words and updating scores
     public void FinalizeTurn()
     {
+        // Get the tiles placed this turn from the board manager
         List<Vector2Int> tilesPlacedThisTurn = boardManager.GetTilesPlacedThisTurn();
+        // Get the current state of the board tiles
         Tile[,] boardTilesData = boardManager.GetBoardTilesData();
 
+        // Get the list of words formed during this turn
         List<WordInfo> wordsFormed = GetWordsFormed(tilesPlacedThisTurn, boardTilesData);
 
         if (wordsFormed.Count == 0)
@@ -188,22 +221,21 @@ public class TileManager : MonoBehaviour
                 tile.RevertColor();  // Revert the color to the original
             }
 
+            // Reset the tiles placed this turn
             boardManager.ResetTilesPlacedThisTurn();
         }
         else
         {
-            TotalTilesPlaced += tilesPlacedThisTurn.Count;
-
-            Player currentPlayer = GetCurrentPlayer();
+            Player currentPlayer = GetCurrentPlayer(); // Get the current player
 
             foreach (WordInfo wordInfo in wordsFormed)
             {
-                string word = wordInfo.Word.ToUpper();
+                string word = wordInfo.Word.ToUpper(); // Convert word to uppercase
 
                 if (validWords.Contains(word))
                 {
-                    int wordScore = CalculateWordScore(wordInfo);
-                    currentPlayer.Score += wordScore;
+                    int wordScore = CalculateWordScore(wordInfo); // Calculate the word's score
+                    currentPlayer.Score += wordScore; // Add to player's score
                     Debug.Log($"Word '{word}' is valid and scored {wordScore} points.");
                 }
                 else
@@ -222,7 +254,9 @@ public class TileManager : MonoBehaviour
                 }
             }
 
-            // Update the player's score
+            TotalTilesPlaced += tilesPlacedThisTurn.Count; // Update total tiles placed
+
+            // Update the player's score display
             var scoreDisplay = scoreContainer.transform.Find($"Player{currentPlayerIndex + 1}ScoreText");
             if (scoreDisplay != null)
             {
@@ -233,21 +267,21 @@ public class TileManager : MonoBehaviour
                 Debug.LogError($"Could not find score display for {currentPlayer.Name}");
             }
 
-            // Refill player's hand
+            // Refill the player's tiles after the turn
             RefillPlayerTiles(currentPlayer);
         }
 
         // End the player's turn
         EndTurn();
 
-        // Update UI for the next player
+        // Update the UI for the next player
         boardManager.UpdateUIForCurrentPlayer();
 
         // Clear the list of placed tiles
         boardManager.ClearTilesPlacedThisTurn();
     }
 
-    // Get words formed during this turn
+    // Gets the words formed during this turn based on tiles placed
     List<WordInfo> GetWordsFormed(List<Vector2Int> tilesPlacedThisTurn, Tile[,] boardTilesData)
     {
         List<WordInfo> wordsFormed = new List<WordInfo>();
@@ -275,6 +309,7 @@ public class TileManager : MonoBehaviour
         return wordsFormed;
     }
 
+    // Constructs a word starting from a position in a specific direction
     WordInfo GetWord(Vector2Int startPos, Vector2Int direction, Tile[,] boardTilesData)
     {
         WordInfo wordInfo = new WordInfo();
@@ -282,18 +317,18 @@ public class TileManager : MonoBehaviour
 
         int boardSize = boardTilesData.GetLength(0);
 
-        // Move left or up (based on the direction) to find the start of the word
+        // Move backwards to find the start of the word
         Vector2Int pos = startPos;
         while (true)
         {
-            pos -= direction;  // Move backwards to find the start of the word
+            pos -= direction;  // Move backwards
             if (!IsValidGridPosition(pos, boardSize) || !boardTilesData[pos.x, pos.y].IsOccupied)
                 break;
 
             wordTiles.Insert(0, boardTilesData[pos.x, pos.y]); // Add tiles to the start of the list
         }
 
-        // Reset position and now move right or down (based on the direction) to find the rest of the word
+        // Reset position and move forwards to find the rest of the word
         pos = startPos;
         while (true)
         {
@@ -306,16 +341,16 @@ public class TileManager : MonoBehaviour
                 break;
             }
 
-            pos += direction; // Move forwards to continue forming the word
+            pos += direction; // Move forwards
             if (!IsValidGridPosition(pos, boardSize))
                 break;
         }
 
-        // If the word consists of only one tile and wasn't part of a longer word
+        // If the word consists of only one tile
         if (wordTiles.Count <= 1)
             return null;
 
-        // Build the word string
+        // Build the word string from the tiles
         string word = "";
         foreach (Tile tile in wordTiles)
         {
@@ -328,29 +363,33 @@ public class TileManager : MonoBehaviour
         return wordInfo;
     }
 
+    // Checks if a grid position is valid within the board
     bool IsValidGridPosition(Vector2Int position, int boardSize)
     {
         return position.x >= 0 && position.x < boardSize && position.y >= 0 && position.y < boardSize;
     }
 
+    // Class representing information about a formed word
     public class WordInfo
     {
-        public List<Tile> Tiles = new List<Tile>();
-        public string Word;
+        public List<Tile> Tiles = new List<Tile>(); // The tiles that make up the word
+        public string Word; // The word string
     }
 
+    // Calculates the score of a word based on tile values and multipliers
     int CalculateWordScore(WordInfo wordInfo)
     {
-        int wordMultiplier = 1;
-        int wordScore = 0;
+        int wordMultiplier = 1; // Multiplier for the word
+        int wordScore = 0; // Total score for the word
 
         foreach (Tile tile in wordInfo.Tiles)
         {
-            int letterScore = tile.PointValue;
-            int letterMultiplier = 1;
+            int letterScore = tile.PointValue; // The point value of the letter
+            int letterMultiplier = 1; // Multiplier for the letter
 
             if (tile.PlacedThisTurn)
             {
+                // Apply multipliers based on tile type
                 switch (tile.TileType)
                 {
                     case "DWS":
@@ -368,23 +407,24 @@ public class TileManager : MonoBehaviour
                 }
             }
 
-            wordScore += letterScore * letterMultiplier;
+            wordScore += letterScore * letterMultiplier; // Add to word score
         }
 
-        wordScore *= wordMultiplier;
+        wordScore *= wordMultiplier; // Apply word multiplier
         return wordScore;
     }
 
+    // Refills the player's hand with tiles up to the initial number
     void RefillPlayerTiles(Player player)
     {
-        int tilesToDraw = initialTilesPerPlayer - player.PlayerTiles.Count;
+        int tilesToDraw = initialTilesPerPlayer - player.PlayerTiles.Count; // Calculate how many tiles to draw
 
         for (int i = 0; i < tilesToDraw; i++)
         {
-            Tile tile = DrawRandomTile();
+            Tile tile = DrawRandomTile(); // Draw a random tile
             if (tile != null)
             {
-                player.AddTile(tile);
+                player.AddTile(tile); // Add tile to player's hand
             }
             else
             {

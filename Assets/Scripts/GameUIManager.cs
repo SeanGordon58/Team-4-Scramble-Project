@@ -6,19 +6,29 @@ using UnityEngine.SceneManagement;
 
 public class GameUIManager : MonoBehaviour
 {
-    // References to UI elements
-    public GameObject tileButtonPrefab; // Prefab for the tile button UI
-    public Transform tilePanel;
-    public Button endTurnButton;        // Reference to the End Turn button
-    public Button endGameButton;        // Reference to the End Game button
-    public Button restartButton;        // Reference to the End Game button
+    // Prefab for the tile button UI
+    public GameObject tileButtonPrefab;
 
+    // Panel to hold tile buttons
+    public Transform tilePanel;
+
+    // Reference to the End Turn button
+    public Button endTurnButton;
+
+    // Reference to the End Game button
+    public Button endGameButton;
+
+    // Reference to the Restart button
+    public Button restartButton;
+
+    // Text displaying the current player
     public TextMeshProUGUI PlayerIndicator;
 
-    public TileManager tileManager;   // Reference to the Board Manager
+    public TileManager tileManager; // Reference to the Tile Manager
 
-    private Tile selectedTile;    // The currently selected tile for placement
+    private Tile selectedTile; // The currently selected tile for placement
 
+    // Initializes the game UI elements
     public void InitializeUI()
     {
         endTurnButton.gameObject.SetActive(true);
@@ -32,28 +42,31 @@ public class GameUIManager : MonoBehaviour
     {
         // Add listener for the End Turn button
         endTurnButton.onClick.AddListener(OnEndTurnButtonClicked);
+        // Add listener for the End Game button
         endGameButton.onClick.AddListener(OnEndGameButtonClicked);
+        // Add listener for the Restart button
         restartButton.onClick.AddListener(OnRestartButtonClicked);
     }
 
-    // Method called when the End Turn button is clicked
-
+    // Method called when the Restart button is clicked
     void OnRestartButtonClicked()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // loads current scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reloads the current scene
     }
 
+    // Method called when the End Game button is clicked
     void OnEndGameButtonClicked()
     {
-        Application.Quit();
+        Application.Quit(); // Quits the application
     }
 
+    // Method called when the End Turn button is clicked
     void OnEndTurnButtonClicked()
     {
-        tileManager.FinalizeTurn();
+        tileManager.FinalizeTurn(); // Finalizes the turn in the tile manager
     }
 
-    // Populate the player's tiles in the UI
+    // Populates the player's tiles in the UI
     public void DisplayUIForPlayer(Player player)
     {
         // Clear the existing buttons
@@ -94,7 +107,7 @@ public class GameUIManager : MonoBehaviour
     // Called when the player selects a tile
     private void SelectTile(Tile tile)
     {
-        selectedTile = tile;
+        selectedTile = tile; // Set the selected tile
         Debug.Log($"Selected tile: {tile.Letter}");
     }
 
@@ -104,7 +117,7 @@ public class GameUIManager : MonoBehaviour
         return selectedTile;
     }
 
-    // Clear the selected tile after placement
+    // Clears the selected tile after placement
     public void ClearSelectedTile()
     {
         selectedTile = null;

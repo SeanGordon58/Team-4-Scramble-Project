@@ -3,26 +3,38 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
+    // Prefab for creating board tile GameObjects
     public GameObject tilePrefab;
+
+    // The size of the board (e.g., 15x15)
     public int boardSize = 15;
+
+    // Reference to the TileManager
     public TileManager tileManager;
+
+    // Reference to the GameUIManager
     public GameUIManager gameUIManager;
 
-    private GameObject[,] boardTiles; // The visual tiles on the board
-    private Tile[,] boardTilesData;   // The data for each tile on the board
+    // 2D array to store the visual tiles on the board
+    private GameObject[,] boardTiles;
 
+    // 2D array to store the data for each tile on the board
+    private Tile[,] boardTilesData;
+
+    // List of positions where tiles were placed this turn
     public List<Vector2Int> tilesPlacedThisTurn = new List<Vector2Int>();
 
     private void Start()
     {
-        InitializeBoardLayout();
-        UpdateUIForCurrentPlayer();
+        InitializeBoardLayout(); // Initialize the board
+        UpdateUIForCurrentPlayer(); // Update UI for the current player
     }
 
+    // Initializes the board layout and assigns special tiles
     void InitializeBoardLayout()
     {
-        boardTiles = new GameObject[boardSize, boardSize];
-        boardTilesData = new Tile[boardSize, boardSize];
+        boardTiles = new GameObject[boardSize, boardSize]; // Initialize visual tiles array
+        boardTilesData = new Tile[boardSize, boardSize];   // Initialize data tiles array
 
         for (int y = 0; y < boardSize; y++)
         {
@@ -48,10 +60,11 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        // Assign special tiles
+        // Assign special tiles (e.g., DWS, TWS, etc.)
         AssignSpecialTiles();
     }
 
+    // Assigns special tiles to the board based on standard positions
     void AssignSpecialTiles()
     {
         // Triple Word Score (TWS) positions
@@ -130,6 +143,7 @@ public class BoardManager : MonoBehaviour
         SetSpecialTile(7, 7, "Center");
     }
 
+    // Sets a special tile at a given position
     void SetSpecialTile(int x, int y, string tileType)
     {
         Tile tile = boardTilesData[x, y];
@@ -144,6 +158,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    // Updates the UI for the current player
     public void UpdateUIForCurrentPlayer()
     {
         Player currentPlayer = tileManager.GetCurrentPlayer();
@@ -167,11 +182,13 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    // Checks if a grid position is valid within the board
     bool IsValidGridPosition(Vector2Int position)
     {
         return position.x >= 0 && position.x < boardSize && position.y >= 0 && position.y < boardSize;
     }
 
+    // Attempts to place a tile on the board at the specified grid position
     void PlaceTileOnBoard(Vector2Int gridPosition)
     {
         Player currentPlayer = tileManager.GetCurrentPlayer();
@@ -228,7 +245,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-
+    // Checks if placing a tile at the specified position is a valid move
     bool IsValidMove(Vector2Int position)
     {
         Tile boardTileData = boardTilesData[position.x, position.y];
@@ -274,7 +291,7 @@ public class BoardManager : MonoBehaviour
         return false;
     }
 
-
+    // Resets the tiles placed this turn, returning them to the player's hand
     public void ResetTilesPlacedThisTurn()
     {
         Player currentPlayer = tileManager.GetCurrentPlayer();
@@ -318,7 +335,6 @@ public class BoardManager : MonoBehaviour
         // Update the UI for the current player's hand
         gameUIManager.DisplayUIForPlayer(currentPlayer);
     }
-
 
     // Expose necessary data and methods to TileManager
     public List<Vector2Int> GetTilesPlacedThisTurn()
